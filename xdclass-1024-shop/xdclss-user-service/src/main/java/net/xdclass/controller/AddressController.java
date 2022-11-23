@@ -4,6 +4,7 @@ package net.xdclass.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import net.xdclass.exception.BizException;
 import net.xdclass.model.AddressDO;
 import net.xdclass.service.AddressService;
 import net.xdclass.util.JsonData;
@@ -36,6 +37,11 @@ public class AddressController {
             @ApiParam(value = "地址id", required = true)
             @PathVariable("address_id") Long addressId) {
         AddressDO addressDO = addressService.detai(addressId);
+
+//        if (addressId == 1){
+//            throw new BizException(-1,"测试自定义异常");
+//        }
+
         return JsonData.buildSuccess(addressDO);
     }
 }
