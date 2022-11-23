@@ -7,8 +7,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="xdclass-coupon-service" />
         <module name="xdclass-common" />
-        <module name="xdclass-coupon" />
         <module name="xdclass-gateway" />
         <module name="xsclass-order-service" />
         <module name="xdclss-user-service" />
