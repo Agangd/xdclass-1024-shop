@@ -4,11 +4,16 @@ import com.google.code.kaptcha.Producer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import net.xdclass.enums.BizCodeEnum;
+import net.xdclass.enums.SendCodeEnum;
+import net.xdclass.service.NotifyService;
 import net.xdclass.util.CommonUtil;
+import net.xdclass.util.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
@@ -31,6 +36,9 @@ public class NotifyController {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private NotifyService notifyService;
 
     private static final long CAPTCHA_CODE_EXPIRED = 60 * 1000 * 10;
     /**
@@ -65,6 +73,34 @@ public class NotifyController {
     }
 
 
+    /**
+     * 发送验证码
+     * 1、匹配图形验证码是否正常
+     * 2、发送验证码
+     * @param to
+     * @param captcha
+     * @return
+     */
+    @ApiOperation("发送邮箱验证码")
+    @GetMapping("send_code")
+    public JsonData sendRegisterCode(@RequestParam(value = "to",required = true)String to,
+                                     @RequestParam(value = "captcha",required = true)String captcha,
+                                     HttpServletRequest request){
+
+        String key = getCaptchaKey(request);
+        String CacheCaptcha = (String) redisTemplate.opsForValue().get(key);
+
+        //匹配图形验证码是否一样
+        if (captcha != null && CacheCaptcha != null && captcha.equalsIgnoreCase(CacheCaptcha)){
+            //成功
+            redisTemplate.delete(key);
+            JsonData jsonData = notifyService.sendCode(SendCodeEnum.USER_REGISTER,to);
+            return jsonData;
+        }else {
+            //失败
+            return JsonData.buildResult(BizCodeEnum.CODE_CAPTCHA);
+        }
+    }
     /**
      * 获取缓存的key
      * @param request
