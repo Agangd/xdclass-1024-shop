@@ -47,6 +47,6 @@ public class MailServiceImpl implements MailService {
         //发送邮件
         mailSender.send(message);
 
-        log.info("邮件发送成功:{]",message.toString());
+        log.info("邮件发送成功:{}",message.toString());
     }
 }
