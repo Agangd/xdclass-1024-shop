@@ -69,7 +69,7 @@ public class NotifyServiceImpl implements NotifyService {
         }
 
          //拼接验证码 2233_32423224
-         String code = CommonUtil.getRandomCode(6);
+         String code = CommonUtil.getRandomCode(4);
          String value = code + "_" + CommonUtil.getCurrentTimestamp();
 
          redisTemplate.opsForValue().set(cacheKey,value,CODE_EXPIRED, TimeUnit.MILLISECONDS);
