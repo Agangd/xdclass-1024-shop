@@ -39,6 +39,7 @@ logging:
 aliyun:
   oss:
     endpoint: oss-cn-hangzhou.aliyuncs.com
+
     access-Key-id: LTAI5t9SX9oAscQohRA3u8JK
     access-Key-secret: 1Gr3HCoRoILswlodY6QT1mHS8cYSnk
     bucketname: xdclass-1024-shop-user-service-agang
