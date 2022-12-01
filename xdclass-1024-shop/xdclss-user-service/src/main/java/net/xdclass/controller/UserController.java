@@ -35,26 +35,29 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
     /**
      * 上传用户头像
      * 默认最大是1M，超过则报错
+     *
      * @param file 头像
      * @return
      */
     @ApiOperation("用户头像上传")
     @PostMapping(value = "upload")
     public JsonData uploadUserImg(
-            @ApiParam(value = "用户上传",required = true)
+            @ApiParam(value = "用户上传", required = true)
             @RequestPart("file") MultipartFile file) throws IOException {
 
         String result = fileService.uploadUserImg(file);
 
-        return result!=null?JsonData.buildSuccess(result):JsonData.buildResult(BizCodeEnum.FILE_LOAD_USER_IMG_FAIL);
+        return result != null ? JsonData.buildSuccess(result) : JsonData.buildResult(BizCodeEnum.FILE_LOAD_USER_IMG_FAIL);
     }
 
 
     /**
      * 用户注册
+     *
      * @param registerRequest
      * @return
      */
@@ -62,7 +65,7 @@ public class UserController {
     @PostMapping("register")
     public JsonData register(
             @ApiParam("用户注册对象")
-            @RequestBody UserRegisterRequest registerRequest){
+            @RequestBody UserRegisterRequest registerRequest) {
 
         JsonData register = userService.register(registerRequest);
         return register;

@@ -1,5 +1,6 @@
 package net.xdclass.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.enums.SendCodeEnum;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -46,10 +48,10 @@ public class UserServiceImpl implements UserService {
         userDO.setSlogan("心若有所往，何惧道阻长");
         //设置密码 TODO
         //生成密钥 盐
-        userDO.setSecret("$1$"+ CommonUtil.getStringNumRandom(8));
+        userDO.setSecret("$1$" + CommonUtil.getStringNumRandom(8));
 
         //密码加盐处理
-        String cryptPwd = Md5Crypt.md5Crypt(registerRequest.getPwd().getBytes(),userDO.getSecret());
+        String cryptPwd = Md5Crypt.md5Crypt(registerRequest.getPwd().getBytes(), userDO.getSecret());
         userDO.setPwd(cryptPwd);
 
         //账号唯一性检查 TODO
@@ -68,19 +70,26 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 校验用户账号唯一
+     *
      * @param mail
      * @return
      */
     private boolean checkUnique(String mail) {
-        return true;
+
+        QueryWrapper<UserDO> queryWrapper = new QueryWrapper<UserDO>().eq("mail",mail);
+
+        List<UserDO> list = userMapper.selectList(queryWrapper);
+
+        return list.size() > 0 ? false : true;
     }
 
 
     /**
      * 用户注册，初始化福利信息 TODO
+     *
      * @param userDO
      */
-    private void userRegisterInitTask(UserDO userDO){
+    private void userRegisterInitTask(UserDO userDO) {
 
     }
 }
