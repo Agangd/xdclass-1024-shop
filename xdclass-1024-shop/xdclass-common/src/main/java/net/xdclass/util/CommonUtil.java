@@ -109,4 +109,20 @@ public class CommonUtil {
 
         return UUID.randomUUID().toString().replace("-","").substring(0,32);
     }
+
+    /**
+     * 获取随机长度的串
+     * @param length
+     * @return
+     */
+    private static final String ALL_CHAR_NUM = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    public static String getStringNumRandom(int length) {
+        //生成随机数字和字母
+        Random random = new Random();
+        StringBuilder saltBuilder = new StringBuilder(length);
+        for (int i = 1; i <= length ;i++ ){
+            saltBuilder.append(ALL_CHAR_NUM.charAt(random.nextInt(ALL_CHAR_NUM.length())));
+        }
+        return saltBuilder.toString();
+    }
 }
