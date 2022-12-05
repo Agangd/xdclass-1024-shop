@@ -1,6 +1,7 @@
 package net.xdclass.interceptor;
 
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.model.LoginUser;
 import net.xdclass.util.CommonUtil;
@@ -13,12 +14,15 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
 
 
     public static ThreadLocal<LoginUser> threadLocal = new ThreadLocal<>();
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        log.info("请求的路劲为[{}]-[{}]",request.getMethod(),request.getRequestURI());
 
         String accessToken = request.getHeader("token");
         if (accessToken == null){
@@ -50,6 +54,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
             //通过threadLocal传递用户信息 TODO
             threadLocal.set(loginUser);
+
             return true;
         }
 

@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(registerRequest, userDO);
         userDO.setCreateTime(new Date());
         userDO.setSlogan("心若有所往，何惧道阻长");
-        //设置密码 TODO
+        //设置密码
         //生成密钥 盐
         userDO.setSecret("$1$" + CommonUtil.getStringNumRandom(8));
 
