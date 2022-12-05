@@ -1,12 +1,19 @@
 package net.xdclass.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.util.Random;
 import java.util.UUID;
 
+@Slf4j
 public class CommonUtil {
     /**
      * 获取ip
@@ -124,5 +131,24 @@ public class CommonUtil {
             saltBuilder.append(ALL_CHAR_NUM.charAt(random.nextInt(ALL_CHAR_NUM.length())));
         }
         return saltBuilder.toString();
+    }
+
+    /**
+     * 响应JSOn数据给前端
+     * @param response
+     * @param obj
+     */
+    public  static void sendJsonMessage(HttpServletResponse response ,Object obj){
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.setContentType("application/json;charset=utf-8");
+        try {
+            PrintWriter writer = response.getWriter();
+            writer.print(objectMapper.writeValueAsString(obj));
+            response.flushBuffer();
+        } catch (IOException e) {
+            log.warn("响应给json数据给前端异常:{}",e);
+        }
+
     }
 }
