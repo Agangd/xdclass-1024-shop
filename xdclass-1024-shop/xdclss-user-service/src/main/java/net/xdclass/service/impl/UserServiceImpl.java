@@ -5,17 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.enums.SendCodeEnum;
 import net.xdclass.mapper.UserMapper;
+import net.xdclass.model.LoginUser;
 import net.xdclass.model.UserDO;
+import net.xdclass.request.UserLoginRequest;
 import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.service.NotifyService;
 import net.xdclass.service.UserService;
 import net.xdclass.util.CommonUtil;
+import net.xdclass.util.JWTUtil;
 import net.xdclass.util.JsonData;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
 import java.util.List;
@@ -65,6 +69,41 @@ public class UserServiceImpl implements UserService {
             return JsonData.buildSuccess();
         } else {
             return JsonData.buildResult(BizCodeEnum.ACCOUNT_REPEAT);
+        }
+    }
+
+    /**
+     * 用户登录
+     * 1、根据mail找是否存在这条记录
+     * 2、有则用密钥+用户传递的明文密码，进行加密，再和数据库的密文进行匹配
+     * @param userLoginRequest
+     * @return
+     */
+    @Override
+    public JsonData login(UserLoginRequest userLoginRequest) {
+
+        List<UserDO> userDOList = userMapper.selectList(new QueryWrapper<UserDO>().eq("mail",userLoginRequest.getMail()));
+        if (userDOList != null && userDOList.size() == 1){
+            //已经注册
+            UserDO userDo = userDOList.get(0);
+            String crypt = Md5Crypt.md5Crypt(userLoginRequest.getPwd().getBytes(),userDo.getSecret());
+
+            if (crypt.equals(userDo.getPwd())){
+                //登录成功，生成token
+                LoginUser loginUser = new LoginUser();
+                BeanUtils.copyProperties(userDo,loginUser);
+
+                String token = JWTUtil.geneJsonWebToken(loginUser);
+
+                return JsonData.buildSuccess(token);
+            }
+            else {
+                //密码错误
+                return JsonData.buildResult(BizCodeEnum.ACCOUNT_PWD_ERROR);
+            }
+        }else {
+            //账号未注册
+            return JsonData.buildResult(BizCodeEnum.ACCOUNT_UNREGISTER);
         }
     }
 

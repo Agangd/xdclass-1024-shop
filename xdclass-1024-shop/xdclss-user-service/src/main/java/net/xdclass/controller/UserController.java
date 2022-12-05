@@ -2,9 +2,12 @@ package net.xdclass.controller;
 
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import net.xdclass.enums.BizCodeEnum;
+import net.xdclass.model.LoginUser;
+import net.xdclass.request.UserLoginRequest;
 import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.service.FileService;
 import net.xdclass.service.UserService;
@@ -69,6 +72,23 @@ public class UserController {
 
         JsonData register = userService.register(registerRequest);
         return register;
+    }
+
+    /**
+     * 用户登录
+     *
+     * @param userLoginRequest
+     * @return
+     */
+    @ApiOperation("用户登录")
+    @PostMapping("login")
+    public JsonData login(
+            @ApiParam("用户登录对象")
+            @RequestBody UserLoginRequest userLoginRequest) {
+
+        JsonData jsonData = userService.login(userLoginRequest);
+
+        return JsonData.buildSuccess(jsonData);
     }
 }
 
