@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class LoginInterceptor implements HandlerInterceptor {
 
+
+    public static ThreadLocal<LoginUser> threadLocal = new ThreadLocal<>();
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -47,6 +49,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 //          request.setAttribute("loginUser",loginUser);
 
             //通过threadLocal传递用户信息 TODO
+            threadLocal.set(loginUser);
             return true;
         }
 
