@@ -12,6 +12,7 @@ import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.service.FileService;
 import net.xdclass.service.UserService;
 import net.xdclass.util.JsonData;
+import net.xdclass.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,6 +90,16 @@ public class UserController {
         JsonData jsonData = userService.login(userLoginRequest);
 
         return JsonData.buildSuccess(jsonData);
+    }
+
+
+    @ApiOperation("个人信息查询")
+    @GetMapping("detail")
+    public JsonData detail(){
+
+        UserVO userVO = userService.findUserDetail();
+
+        return JsonData.buildSuccess(userVO);
     }
 }
 
