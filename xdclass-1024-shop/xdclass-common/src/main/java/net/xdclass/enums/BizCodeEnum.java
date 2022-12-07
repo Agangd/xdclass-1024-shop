@@ -11,7 +11,7 @@ public enum BizCodeEnum {
     /**
      * 通⽤操作码
      */
-    OPS_REPEAT(110001, "᯿复操作"),
+    OPS_REPEAT(110001, "重复操作"),
     /**
      * 购物⻋
      */
@@ -29,6 +29,7 @@ public enum BizCodeEnum {
     ACCOUNT_REPEAT(250001, "账号已经存在"),
     ACCOUNT_UNREGISTER(250002, "账号不存在"),
     ACCOUNT_PWD_ERROR(250003, "账号或者密码错误"),
+    ACCOUNT_UNLOGIN(250004,"用户未登录"),
     /**
      * 优惠券
      */

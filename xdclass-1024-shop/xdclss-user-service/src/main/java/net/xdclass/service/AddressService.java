@@ -3,6 +3,8 @@ package net.xdclass.service;
 import net.xdclass.request.AddressRequest;
 import net.xdclass.vo.AddressVO;
 
+import java.util.List;
+
 public interface AddressService {
 
     /**
@@ -24,4 +26,10 @@ public interface AddressService {
      * @return
      */
     int del(int addressId);
+
+    /**
+     * 查找用户全部收货地址
+     * @return
+     */
+    List<AddressVO> listUserAllAddress();
 }

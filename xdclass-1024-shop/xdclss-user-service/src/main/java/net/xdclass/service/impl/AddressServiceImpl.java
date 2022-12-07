@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -22,17 +24,23 @@ public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private AddressMapper addressMapper;
+
+    /**
+     * 根据id查询地址详情
+     * @param id
+     * @return
+     */
     @Override
     public AddressVO detail(Long id) {
 
-        AddressDO addressDO = addressMapper.selectOne(new QueryWrapper<AddressDO>().eq("id", id));
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        AddressDO addressDO = addressMapper.selectOne(new QueryWrapper<AddressDO>().eq("id", id).eq("user_id",loginUser.getId()));
 
         if(addressDO == null){
             return null;
         }
         AddressVO addressVO = new AddressVO();
         BeanUtils.copyProperties(addressDO,addressVO);
-
 
         return addressVO;
     }
@@ -79,8 +87,31 @@ public class AddressServiceImpl implements AddressService {
 
 //        int rows = addressMapper.deleteById(addressId);
 
-        int rows = addressMapper.delete(new QueryWrapper<AddressDO>().eq("id",addressId));
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        int rows = addressMapper.delete(new QueryWrapper<AddressDO>().eq("id",addressId).eq("user_id",loginUser.getId()));
 
         return rows;
     }
+
+    /**
+     * 查找用户全部收获地址
+     * @return
+     */
+    @Override
+    public List<AddressVO> listUserAllAddress() {
+
+
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        List<AddressDO> list = addressMapper.selectList(new QueryWrapper<AddressDO>().eq("user_id",loginUser.getId()));
+
+        List<AddressVO> addressVOS =  list.stream().map(obj->{
+            AddressVO addressVO = new AddressVO();
+            BeanUtils.copyProperties(obj,addressVO);
+            return addressVO;
+        }).collect(Collectors.toList());
+
+        return addressVOS;
+    }
+
+
 }

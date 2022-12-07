@@ -1,9 +1,9 @@
 package net.xdclass.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
-import java.util.Date;
-
+@Data
 public class AddressVO {
 
     private Long id;

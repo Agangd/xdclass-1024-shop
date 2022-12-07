@@ -12,6 +12,8 @@ import net.xdclass.vo.AddressVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 电商-公司收发货地址表 前端控制器
@@ -29,6 +31,11 @@ public class AddressController {
     private AddressService addressService;
 
 
+    /**
+     * 新增收货地址
+     * @param addressRequest
+     * @return
+     */
     @ApiOperation("新增收获地址")
     @PostMapping("add")
     public JsonData add(@ApiParam("地址对象") @RequestBody AddressRequest addressRequest) {
@@ -46,14 +53,11 @@ public class AddressController {
      */
     @ApiOperation("根据id查找地址详情")
     @GetMapping("find/{address_id}")
-    public Object detai(
+    public Object detail(
             @ApiParam(value = "地址id", required = true)
             @PathVariable("address_id") Long addressId) {
-        AddressVO addressVO = addressService.detail(addressId);
 
-//        if (addressId == 1){
-//            throw new BizException(-1,"测试自定义异常");
-//        }
+        AddressVO addressVO = addressService.detail(addressId);
 
         return addressVO == null ? JsonData.buildResult(BizCodeEnum.ADDRESS_NO_EXITS) : JsonData.buildSuccess(addressVO);
     }
@@ -72,6 +76,20 @@ public class AddressController {
         int rows = addressService.del(addressId);
 
         return rows == 1 ? JsonData.buildSuccess() : JsonData.buildResult(BizCodeEnum.ADDRESS_DEL_FAIL);
+    }
+
+
+    /**
+     * 查询用户的全部收货地址
+     * @return
+     */
+    @ApiOperation("查询用户的所有收货地址")
+    @GetMapping("list")
+    public JsonData findAllAddress(){
+
+        List<AddressVO> list = addressService.listUserAllAddress();
+
+        return JsonData.buildSuccess(list);
     }
 }
 
