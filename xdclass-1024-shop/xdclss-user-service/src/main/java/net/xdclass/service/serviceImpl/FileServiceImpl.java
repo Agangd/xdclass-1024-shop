@@ -1,4 +1,4 @@
-package net.xdclass.service.impl;
+package net.xdclass.service.serviceImpl;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;

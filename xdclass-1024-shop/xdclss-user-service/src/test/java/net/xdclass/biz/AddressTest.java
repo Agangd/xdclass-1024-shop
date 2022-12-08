@@ -3,7 +3,6 @@ package net.xdclass.biz;
 
 import lombok.extern.slf4j.Slf4j;
 import net.xdclass.UserApplication;
-import net.xdclass.model.AddressDO;
 import net.xdclass.service.AddressService;
 import net.xdclass.vo.AddressVO;
 import org.junit.Assert;
