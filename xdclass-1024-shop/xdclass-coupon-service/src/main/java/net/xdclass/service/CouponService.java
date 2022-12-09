@@ -1,7 +1,7 @@
 package net.xdclass.service;
 
-import net.xdclass.model.CouponDO;
-import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 阿刚
  * @since 2022-12-08
  */
-public interface CouponService extends IService<CouponDO> {
+public interface CouponService{
 
+    Map<String,Object> pageCouponActivity(int page , int size);
 }
