@@ -4,14 +4,11 @@ package net.xdclass.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import net.xdclass.config.CouponCategoryEnum;
 import net.xdclass.service.CouponService;
 import net.xdclass.util.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -47,5 +44,20 @@ public class CouponController {
         return JsonData.buildSuccess(pageMap);
     }
 
+
+    /**
+     * 领取优惠券
+     * @param couponId
+     * @return
+     */
+    @ApiOperation("领取优惠券")
+    @GetMapping("/add/promotion/{coupon_id}")
+    public JsonData addPromotionCoupon(
+            @ApiParam(value = "优惠券id" ,required = true)
+            @PathVariable("coupon_id")Long couponId){
+
+        JsonData jsonData = couponService.addCoupon(couponId, CouponCategoryEnum.PROMOTION);
+        return JsonData.buildSuccess();
+    }
 }
 
