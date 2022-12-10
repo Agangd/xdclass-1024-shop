@@ -57,7 +57,8 @@ public class CouponController {
             @PathVariable("coupon_id")Long couponId){
 
         JsonData jsonData = couponService.addCoupon(couponId, CouponCategoryEnum.PROMOTION);
-        return JsonData.buildSuccess();
+
+        return JsonData.buildSuccess(jsonData);
     }
 }
 
