@@ -105,8 +105,8 @@ public class CouponServiceImpl implements CouponService {
         couponRecordDO.setId(null);
 
         //扣减库存 TODO
-//        int rows = couponMapper.reduceStock(couponId);
-        int rows = 1;
+        int rows = couponMapper.reduceStock(couponId);
+//        int rows = 1;
 
         if (rows == 1){
             //库存扣减成功才保存记录
@@ -116,7 +116,7 @@ public class CouponServiceImpl implements CouponService {
             throw new BizException(BizCodeEnum.COUPON_NO_STOCK);
         }
 
-        return JsonData.buildSuccess();
+        return JsonData.buildSuccess(couponRecordDO);
     }
 
     /**
