@@ -25,6 +25,8 @@
     </sql>
 
     <insert id="reduceStock">
-        update coupon set stock=stock-1 where id = #{couponId}
+<!--      update coupon set stock=stock-1 where id = #{couponId}
+      update coupon set stock = stock - #{num} where id = #{couponId} and (stock -#{num}) >= 0 ; -->
+        update coupon set stock = stock -1 where id = #{couponId} and stock > 0
     </insert>
 </mapper>
