@@ -1,7 +1,7 @@
 package net.xdclass.service;
 
 
-import net.xdclass.config.CouponCategoryEnum;
+import net.xdclass.enums.CouponCategoryEnum;
 import net.xdclass.util.JsonData;
 
 import java.util.Map;
@@ -30,5 +30,5 @@ public interface CouponService{
      * @param category
      * @return
      */
-    JsonData addCoupon(Long couponId, CouponCategoryEnum category);
+    JsonData addCoupon(long couponId, CouponCategoryEnum category);
 }

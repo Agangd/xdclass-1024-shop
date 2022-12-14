@@ -15,5 +15,13 @@
         <module name="xdclass-product-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="xdclass-common (1)" target="1.8" />
+      <module name="xdclass-coupon-service (1)" target="1.8" />
+      <module name="xdclass-gateway (1)" target="1.8" />
+      <module name="xdclass-order-service" target="1.8" />
+      <module name="xdclass-product-service (1)" target="1.8" />
+      <module name="xdclass-user-service" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>

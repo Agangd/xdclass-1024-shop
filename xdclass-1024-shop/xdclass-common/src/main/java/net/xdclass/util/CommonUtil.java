@@ -13,16 +13,24 @@ import java.security.MessageDigest;
 import java.util.Random;
 import java.util.UUID;
 
+/**
+ * 小滴课堂,愿景：让技术不再难学
+ *
+ * @Description
+ * @Author 二当家小D
+ * @Remark 有问题直接联系我，源码-笔记-技术交流群
+ * @Version 1.0
+ **/
 @Slf4j
 public class CommonUtil {
+
     /**
      * 获取ip
      *
      * @param request
      * @return
      */
-    public static String
-    getIpAddr(HttpServletRequest request) {
+    public static String getIpAddr(HttpServletRequest request) {
         String ipAddress = null;
         try {
             ipAddress = request.getHeader("x-forwarded-for");
@@ -32,23 +40,20 @@ public class CommonUtil {
             if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getHeader("WL-Proxy-Client-IP");
             }
-            if (ipAddress == null ||
-                    ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getRemoteAddr();
-                if
-                (ipAddress.equals("127.0.0.1")) {
-                    // 根据⽹卡取本机配置的IP
+                if (ipAddress.equals("127.0.0.1")) {
+                    // 根据网卡取本机配置的IP
                     InetAddress inet = null;
                     try {
                         inet = InetAddress.getLocalHost();
-                    } catch
-                    (UnknownHostException e) {
+                    } catch (UnknownHostException e) {
                         e.printStackTrace();
                     }
                     ipAddress = inet.getHostAddress();
                 }
             }
-            // 对于通过多个代理的情况，第⼀个IP为客户端真实IP,多个IP按照','分割
+            // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
             if (ipAddress != null && ipAddress.length() > 15) {
                 // "***.***.***.***".length()
                 // = 15
@@ -62,8 +67,10 @@ public class CommonUtil {
         return ipAddress;
     }
 
+
     /**
      * MD5加密
+     *
      * @param data
      * @return
      */
@@ -75,80 +82,93 @@ public class CommonUtil {
             for (byte item : array) {
                 sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
             }
+
             return sb.toString().toUpperCase();
         } catch (Exception exception) {
         }
         return null;
+
     }
 
 
     /**
      * 获取验证码随机数
+     *
      * @param length
      * @return
      */
-    public static String getRandomCode(int length){
+    public static String getRandomCode(int length) {
 
-        String source = "0123456789";
+        String sources = "0123456789";
         Random random = new Random();
-
         StringBuilder sb = new StringBuilder();
-
-        for (int j = 0;j <length;j++){
-            sb.append(source.charAt(random.nextInt(9)));
+        for (int j = 0; j < length; j++) {
+            sb.append(sources.charAt(random.nextInt(9)));
         }
         return sb.toString();
     }
 
+
     /**
      * 获取当前时间戳
+     *
      * @return
      */
-    public static long getCurrentTimestamp(){
+    public static long getCurrentTimestamp() {
         return System.currentTimeMillis();
     }
 
+
     /**
-     * 生成UUID
+     * 生成uuid
+     *
      * @return
      */
     public static String generateUUID() {
-
-        return UUID.randomUUID().toString().replace("-","").substring(0,32);
+        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 32);
     }
 
     /**
      * 获取随机长度的串
+     *
      * @param length
      * @return
      */
     private static final String ALL_CHAR_NUM = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
     public static String getStringNumRandom(int length) {
-        //生成随机数字和字母
+        //生成随机数字和字母,
         Random random = new Random();
-        StringBuilder saltBuilder = new StringBuilder(length);
-        for (int i = 1; i <= length ;i++ ){
-            saltBuilder.append(ALL_CHAR_NUM.charAt(random.nextInt(ALL_CHAR_NUM.length())));
+        StringBuilder saltString = new StringBuilder(length);
+        for (int i = 1; i <= length; ++i) {
+            saltString.append(ALL_CHAR_NUM.charAt(random.nextInt(ALL_CHAR_NUM.length())));
         }
-        return saltBuilder.toString();
+        return saltString.toString();
     }
 
+
     /**
-     * 响应JSOn数据给前端
+     * 响应json数据给前端
+     *
      * @param response
      * @param obj
      */
-    public  static void sendJsonMessage(HttpServletResponse response ,Object obj){
+    public static void sendJsonMessage(HttpServletResponse response, Object obj) {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        response.setContentType("application/json;charset=utf-8");
-        try {
-            PrintWriter writer = response.getWriter();
+        response.setContentType("application/json; charset=utf-8");
+
+        try (PrintWriter writer = response.getWriter()) {
             writer.print(objectMapper.writeValueAsString(obj));
+
             response.flushBuffer();
+
         } catch (IOException e) {
-            log.warn("响应给json数据给前端异常:{}",e);
+            log.warn("响应json数据给前端异常:{}",e);
         }
 
+
     }
+
+
 }

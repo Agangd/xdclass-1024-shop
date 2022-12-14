@@ -1,5 +1,8 @@
 package net.xdclass.enums;
 
+/**
+ * 优惠券状态
+ */
 public enum CouponPublishEnum {
 
     /**
@@ -15,5 +18,5 @@ public enum CouponPublishEnum {
     /**
      * 下线
      */
-    OFFLINE;
+    OFFLINE
 }

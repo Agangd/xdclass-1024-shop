@@ -5,13 +5,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.xdclass.enums.BizCodeEnum;
 
+/**
+ * 小滴课堂,愿景：让技术不再难学
+ *
+ * @Description
+ * @Author 二当家小D
+ * @Remark 有问题直接联系我，源码-笔记-技术交流群
+ * @Version 1.0
+ **/
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class JsonData {
+
     /**
-     * 状态码 0 表示成功，1表示处理中，-1表示失败
+     * 状态码 0 表示成功
      */
+
     private Integer code;
     /**
      * 数据
@@ -22,9 +33,9 @@ public class JsonData {
      */
     private String msg;
 
+
     /**
-     * 成功，不传⼊数据
-     *
+     * 成功，不传入数据
      * @return
      */
     public static JsonData buildSuccess() {
@@ -32,8 +43,7 @@ public class JsonData {
     }
 
     /**
-     * 成功，传⼊数据
-     *
+     *  成功，传入数据
      * @param data
      * @return
      */
@@ -42,8 +52,7 @@ public class JsonData {
     }
 
     /**
-     * 失败，传⼊描述信息
-     *
+     * 失败，传入描述信息
      * @param msg
      * @return
      */
@@ -51,8 +60,10 @@ public class JsonData {
         return new JsonData(-1, null, msg);
     }
 
+
+
     /**
-     * ⾃定义状态码和错误信息
+     * 自定义状态码和错误信息
      * @param code
      * @param msg
      * @return
@@ -62,13 +73,11 @@ public class JsonData {
     }
 
     /**
-     * 传⼊枚举，返回信息
-     *
+     * 传入枚举，返回信息
      * @param codeEnum
      * @return
      */
-    public static JsonData
-    buildResult(BizCodeEnum codeEnum) {
-        return JsonData.buildCodeAndMsg(codeEnum.getCode(), codeEnum.getMessage());
+    public static JsonData buildResult(BizCodeEnum codeEnum){
+        return JsonData.buildCodeAndMsg(codeEnum.getCode(),codeEnum.getMessage());
     }
 }

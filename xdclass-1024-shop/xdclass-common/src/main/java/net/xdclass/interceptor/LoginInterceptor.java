@@ -14,40 +14,44 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 小滴课堂,愿景：让技术不再难学
+ *
+ * @Description
+ * @Author 二当家小D
+ * @Remark 有问题直接联系我，源码-笔记-技术交流群
+ * @Version 1.0
+ **/
+
 @Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
 
 
     public static ThreadLocal<LoginUser> threadLocal = new ThreadLocal<>();
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        log.info("请求的路劲为[{}]-[{}]",request.getMethod(),request.getRequestURI());
-
         String accessToken = request.getHeader("token");
-        if (accessToken == null){
+        if(accessToken == null) {
             accessToken = request.getParameter("token");
         }
 
-        if (StringUtils.isNotBlank(accessToken)){
-            //不为空
+        if(StringUtils.isNotBlank(accessToken)){
+        //不为空
             Claims claims = JWTUtil.checkJWT(accessToken);
-            if (claims == null){
+            if(claims == null){
                 //未登录
-                CommonUtil.sendJsonMessage(response, JsonData.buildResult(BizCodeEnum.ACCOUNT_UNLOGIN));
+                CommonUtil.sendJsonMessage(response,JsonData.buildResult(BizCodeEnum.ACCOUNT_UNLOGIN));
                 return false;
             }
 
             long userId = Long.valueOf(claims.get("id").toString());
-            String headImg = (String) claims.get("head_img").toString();
-            String name = (String) claims.get("name").toString();
-            String mail = (String) claims.get("mail").toString();
+            String headImg = (String)claims.get("head_img");
+            String name = (String)claims.get("name");
+            String mail = (String)claims.get("mail");
 
-//            LoginUser loginUser = new LoginUser();
-//            loginUser.setName(name);
-//            loginUser.setId(userId);
-//            loginUser.setHeadImg(headImg);
-//            loginUser.setMail(mail);
 
             LoginUser loginUser = LoginUser
                     .builder()
@@ -55,17 +59,25 @@ public class LoginInterceptor implements HandlerInterceptor {
                     .name(name)
                     .id(userId)
                     .mail(mail).build();
+            // protobuf
+//            loginUser.setName(name);
+//            loginUser.setHeadImg(headImg);
+//            loginUser.setId(userId);
+//            loginUser.setMail(mail);
 
-//          通过attribute传递信息
-//          request.setAttribute("loginUser",loginUser);
+            //通过attribute传递用户信息
+            //request.setAttribute("loginUser",loginUser);
 
-            //通过threadLocal传递用户信息 TODO
+            //通过threadLocal传递用户登录信息
+
             threadLocal.set(loginUser);
 
             return true;
+
         }
 
-        CommonUtil.sendJsonMessage(response, JsonData.buildResult(BizCodeEnum.ACCOUNT_UNLOGIN));
+
+        CommonUtil.sendJsonMessage(response,JsonData.buildResult(BizCodeEnum.ACCOUNT_UNLOGIN));
         return false;
     }
 

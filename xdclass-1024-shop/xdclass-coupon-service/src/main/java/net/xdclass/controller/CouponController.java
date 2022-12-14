@@ -4,7 +4,7 @@ package net.xdclass.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import net.xdclass.config.CouponCategoryEnum;
+import net.xdclass.enums.CouponCategoryEnum;
 import net.xdclass.service.CouponService;
 import net.xdclass.util.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;

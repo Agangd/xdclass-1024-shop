@@ -23,7 +23,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-<!--        数据库连接-->
+        <!--        数据库连接-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -34,20 +34,20 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
-<!--        单元测试-->
+        <!--        单元测试-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
-<!--        代码自动生成依赖 begin 上线后不需要,-->
+        <!--        代码自动生成依赖 begin 上线后不需要,-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.4.1</version>
         </dependency>
 
-<!--        velocity-->
+        <!--        velocity-->
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
@@ -90,10 +90,10 @@
             <artifactId>jjwt</artifactId>
         </dependency>
 
-<!--        redisson分布式锁-->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
+            <version>3.10.1</version>
         </dependency>
     </dependencies>
 

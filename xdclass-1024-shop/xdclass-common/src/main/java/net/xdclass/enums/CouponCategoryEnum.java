@@ -1,6 +1,6 @@
-package net.xdclass.config;
+package net.xdclass.enums;
 
-public enum  CouponCategoryEnum {
+public enum CouponCategoryEnum {
 
     /**
      * 新人注册
@@ -8,12 +8,14 @@ public enum  CouponCategoryEnum {
     NEW_USER,
 
     /**
-     * 活动任务促销
+     * 活动任务
      */
     TASK,
 
     /**
-     * 促销券
+     * 促销劵
      */
     PROMOTION
+
+
 }

@@ -2,7 +2,7 @@ package net.xdclass.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
-import net.xdclass.enums.AddressStatus;
+import net.xdclass.enums.AddressStatusEnum;
 import net.xdclass.vo.AddressVO;
 import net.xdclass.interceptor.LoginInterceptor;
 import net.xdclass.mapper.AddressMapper;
@@ -60,14 +60,14 @@ public class AddressServiceImpl implements AddressService {
         BeanUtils.copyProperties(addressRequest, addressDO);
 
         //是否有默认收获地址
-        if (addressDO.getDefaultStatus() == AddressStatus.DEFAULT_STATUS.getStatus()) {
+        if (addressDO.getDefaultStatus() == AddressStatusEnum.DEFAULT_STATUS.getStatus()) {
             //查找数据库是否有默认地址，若有则修改原默认地址
             AddressDO defaultAddressDO = addressMapper.selectOne(new QueryWrapper<AddressDO>()
                     .eq("user_id",loginUser.getId())
-                    .eq("default_status",AddressStatus.DEFAULT_STATUS.getStatus()));
+                    .eq("default_status",AddressStatusEnum.DEFAULT_STATUS.getStatus()));
             if (defaultAddressDO != null){
                 //修改为非默认地址
-                defaultAddressDO.setDefaultStatus(AddressStatus.COMMON_STATUS.getStatus());
+                defaultAddressDO.setDefaultStatus(AddressStatusEnum.COMMON_STATUS.getStatus());
                 addressMapper.update(defaultAddressDO,new QueryWrapper<AddressDO>().eq("id",defaultAddressDO.getId()));
                 log.info("修改原来");
             }

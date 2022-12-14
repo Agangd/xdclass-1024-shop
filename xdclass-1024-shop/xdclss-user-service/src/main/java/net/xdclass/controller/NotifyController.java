@@ -98,7 +98,7 @@ public class NotifyController {
             return jsonData;
         }else {
             //失败
-            return JsonData.buildResult(BizCodeEnum.CODE_CAPTCHA);
+            return JsonData.buildResult(BizCodeEnum.CODE_ERROR);
         }
     }
     /**
