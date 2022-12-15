@@ -1,6 +1,8 @@
 package net.xdclass.service;
 
 
+import java.util.Map;
+
 /**
  * <p>
  *  服务类
@@ -11,4 +13,11 @@ package net.xdclass.service;
  */
 public interface CouponRecordService {
 
+    /**
+     * 分页查询领券记录
+     * @param page
+     * @param size
+     * @return
+     */
+    Map<String,Object> page(int page ,int size);
 }
