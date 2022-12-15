@@ -26,7 +26,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,10 +50,10 @@ import java.util.stream.Collectors;
 public class CouponServiceImpl implements CouponService {
 
 
-    @Autowired
+    @Resource
     private CouponMapper couponMapper;
 
-    @Autowired
+    @Resource
     private CouponRecordMapper couponRecordMapper;
 
     @Autowired
@@ -96,6 +99,7 @@ public class CouponServiceImpl implements CouponService {
      * @param category
      * @return
      */
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     @Override
     public JsonData addCoupon(long couponId, CouponCategoryEnum category) {
 
@@ -103,6 +107,8 @@ public class CouponServiceImpl implements CouponService {
 
         String lockKey = "lock:coupon:"+couponId;
         RLock rLock = redissonClient.getLock(lockKey);
+
+        CouponRecordDO couponRecordDO = new CouponRecordDO();
 
         //多个线程进入，会阻塞等待释放锁
         rLock.lock();
@@ -117,7 +123,6 @@ public class CouponServiceImpl implements CouponService {
                 this.checkCoupon(couponDO, loginUser.getId());
 
                 //构建领劵记录
-                CouponRecordDO couponRecordDO = new CouponRecordDO();
                 BeanUtils.copyProperties(couponDO, couponRecordDO);
                 couponRecordDO.setCreateTime(new Date());
                 couponRecordDO.setUseState(CouponStateEnum.NEW.name());
@@ -141,10 +146,10 @@ public class CouponServiceImpl implements CouponService {
 
             } finally {
                 rLock.unlock();
-                log.info("解锁成功");
+                log.info("解锁成 功");
             }
 
-        return JsonData.buildSuccess();
+        return JsonData.buildSuccess(couponRecordDO);
 
     }
 
