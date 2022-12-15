@@ -3,14 +3,12 @@ package net.xdclass.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.service.CouponRecordService;
 import net.xdclass.util.JsonData;
+import net.xdclass.vo.CouponRecordVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -44,6 +42,16 @@ public class CouponRecordController {
         Map<String,Object> pageResult = couponRecordService.page(page,size);
 
         return JsonData.buildSuccess(pageResult);
+    }
+
+
+    @ApiOperation("查询优惠记录详情")
+    @GetMapping("detail/{record_id}")
+    public JsonData getCouponRecordDetail(@PathVariable("record_id") long recordId){
+
+        CouponRecordVO recordVO = couponRecordService.findById(recordId);
+
+        return recordVO == null ? JsonData.buildResult(BizCodeEnum.COUPON_NO_EXITS) : JsonData.buildSuccess(recordVO);
     }
 }
 

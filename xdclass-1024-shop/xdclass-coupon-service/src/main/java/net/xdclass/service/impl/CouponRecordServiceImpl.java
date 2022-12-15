@@ -59,6 +59,27 @@ public class CouponRecordServiceImpl implements CouponRecordService {
         return pageMap;
     }
 
+    /**
+     * 根据id寻找优惠券详情
+     * @param recordId
+     * @return
+     */
+    @Override
+    public CouponRecordVO findById(long recordId) {
+
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+
+        QueryWrapper queryWrapper = new QueryWrapper<CouponRecordDO>().eq("id",recordId)
+                .eq("user_id",loginUser.getId());
+        CouponRecordDO couponRecordDO = couponRecordMapper.selectOne(queryWrapper);
+
+        if (couponRecordDO == null){
+            return null;
+        }
+        return beanProcess(couponRecordDO);
+    }
+
+    //将CouponRecordDO转换成CouponRecordVO的方法
     private CouponRecordVO beanProcess(CouponRecordDO couponRecordDO) {
 
         CouponRecordVO couponRecordVO = new CouponRecordVO();
