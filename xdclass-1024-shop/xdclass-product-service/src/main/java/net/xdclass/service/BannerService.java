@@ -1,6 +1,9 @@
 package net.xdclass.service;
 
 
+import net.xdclass.vo.BannerVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,4 +15,5 @@ package net.xdclass.service;
  */
 public interface BannerService {
 
+    List<BannerVO> list ();
 }
