@@ -3,7 +3,6 @@ package net.xdclass.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.enums.CouponCategoryEnum;
@@ -11,15 +10,15 @@ import net.xdclass.enums.CouponPublishEnum;
 import net.xdclass.enums.CouponStateEnum;
 import net.xdclass.exception.BizException;
 import net.xdclass.interceptor.LoginInterceptor;
-import net.xdclass.mapper.CouponMapper;
-import net.xdclass.mapper.CouponRecordMapper;
-import net.xdclass.model.CouponDO;
-import net.xdclass.model.CouponRecordDO;
 import net.xdclass.model.LoginUser;
 import net.xdclass.request.NewUserCouponRequest;
 import net.xdclass.service.CouponService;
 import net.xdclass.util.CommonUtil;
 import net.xdclass.util.JsonData;
+import net.xdclass.mapper.CouponMapper;
+import net.xdclass.mapper.CouponRecordMapper;
+import net.xdclass.model.CouponDO;
+import net.xdclass.model.CouponRecordDO;
 import net.xdclass.vo.CouponVO;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -70,7 +69,7 @@ public class CouponServiceImpl implements CouponService {
         Page<CouponDO> pageInfo = new Page<>(page,size);
 
         IPage<CouponDO> couponDOIPage =  couponMapper.selectPage(pageInfo, new QueryWrapper<CouponDO>()
-            .eq("publish",CouponPublishEnum.PUBLISH)
+            .eq("publish", CouponPublishEnum.PUBLISH)
             .eq("category", CouponCategoryEnum.PROMOTION)
             .orderByDesc("create_time"));
 
@@ -148,7 +147,7 @@ public class CouponServiceImpl implements CouponService {
 
             } finally {
                 rLock.unlock();
-                log.info("解锁成 功");
+                log.info("解锁成功");
             }
 
         return JsonData.buildSuccess(couponRecordDO);

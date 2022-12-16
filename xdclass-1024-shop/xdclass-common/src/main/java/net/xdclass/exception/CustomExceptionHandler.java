@@ -1,6 +1,5 @@
 package net.xdclass.exception;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 import net.xdclass.util.JsonData;
 import org.springframework.web.bind.annotation.ControllerAdvice;

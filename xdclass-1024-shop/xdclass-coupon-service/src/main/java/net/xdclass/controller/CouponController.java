@@ -2,7 +2,6 @@ package net.xdclass.controller;
 
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import net.xdclass.enums.CouponCategoryEnum;

@@ -43,7 +43,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             Claims claims = JWTUtil.checkJWT(accessToken);
             if(claims == null){
                 //未登录
-                CommonUtil.sendJsonMessage(response,JsonData.buildResult(BizCodeEnum.ACCOUNT_UNLOGIN));
+                CommonUtil.sendJsonMessage(response, JsonData.buildResult(BizCodeEnum.ACCOUNT_UNLOGIN));
                 return false;
             }
 

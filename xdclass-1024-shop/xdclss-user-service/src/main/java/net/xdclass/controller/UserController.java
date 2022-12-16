@@ -4,13 +4,13 @@ package net.xdclass.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import net.xdclass.request.UserRegisterRequest;
-import net.xdclass.service.FileService;
-import net.xdclass.service.UserService;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.request.UserLoginRequest;
+import net.xdclass.request.UserRegisterRequest;
 import net.xdclass.util.JsonData;
 import net.xdclass.vo.UserVO;
+import net.xdclass.service.FileService;
+import net.xdclass.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

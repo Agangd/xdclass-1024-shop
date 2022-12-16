@@ -2,7 +2,6 @@ package net.xdclass.exception;
 
 import lombok.Data;
 import net.xdclass.enums.BizCodeEnum;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 小滴课堂,愿景：让技术不再难学
