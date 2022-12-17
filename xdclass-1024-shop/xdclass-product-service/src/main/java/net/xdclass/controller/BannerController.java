@@ -3,10 +3,13 @@ package net.xdclass.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import net.xdclass.service.BannerService;
 import net.xdclass.util.JsonData;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 阿刚
  * @since 2022-12-16
  */
-@Api("轮播图模块")
+@Api(tags = "轮播图模块")
 @RestController
 @RequestMapping("/api/banner/v1")
 public class BannerController {
@@ -34,4 +37,6 @@ public class BannerController {
         return JsonData.buildSuccess(bannerService.list());
 
     }
+
+
 }

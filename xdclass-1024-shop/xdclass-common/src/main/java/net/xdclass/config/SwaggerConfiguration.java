@@ -51,9 +51,9 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.ant("/api/**"))
                 .build()
                 // 新版SwaggerUI3.0
-                .globalRequestParameters(globalReqeustParameters())
-                .globalResponses(HttpMethod.GET,getGlabalResponseMessage())
-                .globalResponses(HttpMethod.POST,getGlabalResponseMessage());
+                .globalRequestParameters(globalRequestParameters())
+                .globalResponses(HttpMethod.GET,getGlobalResponseMessage())
+                .globalResponses(HttpMethod.POST,getGlobalResponseMessage());
 
 
     }
@@ -88,7 +88,7 @@ public class SwaggerConfiguration {
         return new ApiInfoBuilder()
                 .title("1024电商平台")
                 .description("微服务接口文档")
-                .contact(new Contact("小滴课堂-二当家小D", "https://xdclass.net", "微信 xdclass6"))
+                .contact(new Contact("阿刚", "https://xdclass.net", "微信 coisini_962"))
                 .version("v1.0")
                 .build();
     }
@@ -99,7 +99,7 @@ public class SwaggerConfiguration {
      *
      * @return
      */
-    private List<RequestParameter> globalReqeustParameters() {
+    private List<RequestParameter> globalRequestParameters() {
 
         List<RequestParameter> parameters = new ArrayList<>();
         parameters.add(new RequestParameterBuilder()
@@ -127,7 +127,7 @@ public class SwaggerConfiguration {
      * 生成通用的响应信息
      */
 
-    private List<Response> getGlabalResponseMessage() {
+    private List<Response> getGlobalResponseMessage() {
 
         List<Response> list = new ArrayList<>();
         list.add(new ResponseBuilder()

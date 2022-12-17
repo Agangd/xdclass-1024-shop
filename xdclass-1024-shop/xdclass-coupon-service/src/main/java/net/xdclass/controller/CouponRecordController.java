@@ -1,6 +1,7 @@
 package net.xdclass.controller;
 
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import net.xdclass.enums.BizCodeEnum;
@@ -20,6 +21,7 @@ import java.util.Map;
  * @author 阿刚
  * @since 2022-12-08
  */
+@Api(tags = "优惠券记录模块")
 @RestController
 @RequestMapping("/api/coupon_record/v1")
 public class CouponRecordController {

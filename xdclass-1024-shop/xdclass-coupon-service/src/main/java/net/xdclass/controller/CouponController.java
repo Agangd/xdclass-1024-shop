@@ -21,7 +21,7 @@ import java.util.Map;
  * @author 阿刚
  * @since 2022-12-08
  */
-@Api("优惠券模块")
+@Api(tags = "优惠券模块")
 @RestController
 @RequestMapping("/api/coupon/v1")
 public class CouponController {
