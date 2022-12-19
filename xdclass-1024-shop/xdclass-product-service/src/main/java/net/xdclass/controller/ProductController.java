@@ -51,6 +51,11 @@ public class ProductController {
     }
 
 
+    /**
+     * 根据商品id查看详情
+     * @param productId
+     * @return
+     */
     @ApiOperation("根据商品id查看详情")
     @GetMapping("/detail/{product_id}")
     public JsonData detail(
@@ -60,5 +65,6 @@ public class ProductController {
         ProductVO productVO = productService.findDetailById(productId);
         return JsonData.buildSuccess(productVO);
     }
+
 }
 

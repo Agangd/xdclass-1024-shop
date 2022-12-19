@@ -95,6 +95,15 @@
             <artifactId>redisson</artifactId>
             <version>3.10.1</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+<!--        引入阿里巴巴cloud后自带，TODO 可以删除这个包-->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.21</version>
+        </dependency>
+
     </dependencies>
 
 </project>
