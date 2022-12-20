@@ -7,11 +7,9 @@ import io.swagger.annotations.ApiParam;
 import net.xdclass.request.CartItemRequest;
 import net.xdclass.service.CartService;
 import net.xdclass.util.JsonData;
+import net.xdclass.vo.CartVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "购物车")
 @RequestMapping("/api/cart/v1")
@@ -30,4 +28,24 @@ public class CartController {
 
         return JsonData.buildSuccess();
     }
+
+
+    @ApiOperation("清空购物车")
+    @DeleteMapping("clean")
+    public JsonData cleanMyCart(){
+
+        cartService.clear();
+        return JsonData.buildSuccess("清空购物车成功");
+    }
+
+
+    @ApiOperation("查看我的购物车")
+    @GetMapping("mycart")
+    public JsonData findMyCart(){
+
+        CartVO cartVO = cartService.getMyCart();
+
+        return JsonData.buildSuccess(cartVO);
+    }
+
 }

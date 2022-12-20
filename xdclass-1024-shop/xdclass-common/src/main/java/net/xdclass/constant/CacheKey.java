@@ -19,7 +19,7 @@ public class CacheKey {
     /**
      * 购物车 hash 结构 ，key是用户唯一标识
      */
-    public static final String CART_KEY = "code:%s";
+    public static final String CART_KEY = "cart:%s";
 
 
 }
