@@ -48,4 +48,29 @@ public class CartController {
         return JsonData.buildSuccess(cartVO);
     }
 
+
+    /**
+     * 删除购物项
+     * @return
+     */
+    @ApiOperation("删除购物项")
+    @DeleteMapping("del/{product_id}")
+    public JsonData deleteItem(
+            @ApiParam(value = "商品id")
+            @PathVariable("product_id") long productId){
+
+        cartService.deleteItem(productId);
+        return JsonData.buildSuccess();
+    }
+
+
+    @ApiOperation("修改购物车数量")
+    @PostMapping("change")
+    public JsonData changeItemNum(@ApiParam("购物项") @RequestBody CartItemRequest cartItemRequest){
+
+        cartService.changItemNum(cartItemRequest);
+
+        return JsonData.buildSuccess();
+    }
+
 }

@@ -10,6 +10,7 @@ import net.xdclass.model.LoginUser;
 import net.xdclass.request.CartItemRequest;
 import net.xdclass.service.CartService;
 import net.xdclass.service.ProductService;
+import net.xdclass.util.JsonData;
 import net.xdclass.vo.CartItemVO;
 import net.xdclass.vo.CartVO;
 import net.xdclass.vo.ProductVO;
@@ -38,6 +39,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 添加商品到购物车
+     *
      * @param cartItemRequest
      */
     @Override
@@ -47,19 +49,19 @@ public class CartServiceImpl implements CartService {
         int buyNum = cartItemRequest.getBuyNum();
 
         //获取购物车
-        BoundHashOperations<String ,Object,Object> myCart = getMyCartOps();
+        BoundHashOperations<String, Object, Object> myCart = getMyCartOps();
         Object cacheObj = myCart.get(productId);
         String result = "";
 
-        if (cacheObj != null){
-            result = (String)cacheObj;
+        if (cacheObj != null) {
+            result = (String) cacheObj;
         }
 
-        if (StringUtils.isBlank(result)){
+        if (StringUtils.isBlank(result)) {
             //不存在则新建一个商品
             CartItemVO cartItemVO = new CartItemVO();
             ProductVO productVO = productService.findDetailById(productId);
-            if (productVO == null){
+            if (productVO == null) {
                 throw new BizException(BizCodeEnum.CART_FAIL);
             }
 
@@ -70,11 +72,11 @@ public class CartServiceImpl implements CartService {
             cartItemVO.setProductTitle(productVO.getTitle());
 
             myCart.put(productId, JSON.toJSONString(cartItemVO));
-        }else {
+        } else {
             //存在商品，修改数量
-            CartItemVO cartItemVO = JSON.parseObject(result,CartItemVO.class);
+            CartItemVO cartItemVO = JSON.parseObject(result, CartItemVO.class);
             cartItemVO.setBuyNum(cartItemVO.getBuyNum() + buyNum);
-            myCart.put(productId,JSON.toJSONString(cartItemVO));
+            myCart.put(productId, JSON.toJSONString(cartItemVO));
         }
     }
 
@@ -91,6 +93,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 查看个人购物车
+     *
      * @return
      */
     @Override
@@ -107,12 +110,49 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
+     * 删除购物项
+     *
+     * @param productId
+     */
+    @Override
+    public void deleteItem(long productId) {
+
+        BoundHashOperations<String, Object, Object> myCart = getMyCartOps();
+
+        myCart.delete(productId);
+
+    }
+
+    /**
+     * 修改购物车数量
+     *
+     * @param cartItemRequest
+     */
+    @Override
+    public void changItemNum(CartItemRequest cartItemRequest) {
+        BoundHashOperations<String, Object, Object> myCart = getMyCartOps();
+
+        Object cacheObj = myCart.get(cartItemRequest.getProductId());
+        if (cacheObj == null){
+            throw new BizException(BizCodeEnum.CART_FAIL);
+        }
+        String obj = (String) cacheObj;
+        CartItemVO cartItemVO = JSON.parseObject(obj, CartItemVO.class);
+        if (cartItemRequest.getBuyNum() < 0){
+            throw new BizException(BizCodeEnum.CART_FAIL);
+        }
+        cartItemVO.setBuyNum(cartItemRequest.getBuyNum());
+        myCart.put(cartItemRequest.getProductId(),JSON.toJSONString(cartItemVO));
+    }
+
+    /**
      * 获取最新的购物项
+     *
      * @param latestPrice 是否获取最新的价格
      * @return
      */
     private List<CartItemVO> buildCartItem(boolean latestPrice) {
-        BoundHashOperations<String,Object,Object> myCart = getMyCartOps();
+        BoundHashOperations<String, Object, Object> myCart = getMyCartOps();
 
         List<Object> itemList = myCart.values();
 
@@ -120,21 +160,22 @@ public class CartServiceImpl implements CartService {
 
         //拼接id列表查询最新价格
         List<Long> productIdList = new ArrayList<>();
-        for (Object item : itemList){
-            CartItemVO cartItemVO = JSON.parseObject((String)item,CartItemVO.class);
+        for (Object item : itemList) {
+            CartItemVO cartItemVO = JSON.parseObject((String) item, CartItemVO.class);
             cartItemVOList.add(cartItemVO);
             productIdList.add(cartItemVO.getProductId());
         }
 
         //查询最新的商品价格
-        if (latestPrice){
-            setProductLatestPrice(cartItemVOList,productIdList);
+        if (latestPrice) {
+            setProductLatestPrice(cartItemVOList, productIdList);
         }
-        return  cartItemVOList;
+        return cartItemVOList;
     }
 
     /**
      * 设置商品最新价格
+     *
      * @param cartItemVOList
      * @param productIdList
      */
@@ -144,9 +185,9 @@ public class CartServiceImpl implements CartService {
         List<ProductVO> productVOList = productService.findProductsByIdBatch(productIdList);
 
         //分组
-        Map<Long,ProductVO> maps = productVOList.stream().collect(Collectors.toMap(ProductVO::getId, Function.identity()));
+        Map<Long, ProductVO> maps = productVOList.stream().collect(Collectors.toMap(ProductVO::getId, Function.identity()));
 
-        cartItemVOList.stream().forEach(item ->{
+        cartItemVOList.stream().forEach(item -> {
 
             ProductVO productVO = maps.get(item.getProductId());
             item.setProductTitle(productVO.getTitle());
@@ -159,9 +200,10 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 抽取我的购物车通用方法
+     *
      * @return
      */
-    private BoundHashOperations<String,Object,Object> getMyCartOps(){
+    private BoundHashOperations<String, Object, Object> getMyCartOps() {
 
         String cartKey = getCartKey();
         return redisTemplate.boundHashOps(cartKey);
@@ -170,12 +212,13 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 购物车key
+     *
      * @return
      */
-    private String getCartKey(){
+    private String getCartKey() {
 
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
-        String cartKey = String.format(CacheKey.CART_KEY,loginUser.getId());
+        String cartKey = String.format(CacheKey.CART_KEY, loginUser.getId());
 
         return cartKey;
     }

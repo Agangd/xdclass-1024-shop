@@ -1,0 +1,25 @@
+server:
+  port: 9004
+spring:
+  application:
+   name: xdclass-order-service
+  #数据库配置
+  datasource:
+   driver-class-name: com.mysql.cj.jdbc.Driver
+   url: jdbc:mysql://127.0.0.1:3306/xdclass_order?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+   username: root
+   password: 123456
+#redis 配置
+  redis:
+    host: 47.99.151.12
+    port: 6379
+    password: qetuoZXCVBNM
+
+#配置plus打印sql⽇志
+mybatis-plus:
+  configuration:
+   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#设置⽇志级别,ERROR/WARN/INFO/DEBUG,默认是INFO以上才显示
+logging:
+  level:
+    root: INFO
