@@ -8,5 +8,5 @@ public enum ProductOrderTypeEnum {
     /**
      * 促销订单
      */
-    PROMOTION;
+    PROMOTION
 }

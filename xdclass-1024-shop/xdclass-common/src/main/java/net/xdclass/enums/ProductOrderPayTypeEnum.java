@@ -12,5 +12,5 @@ public enum ProductOrderPayTypeEnum {
     /**
      * 银⾏卡⽀付
      */
-    BANK;
+    BANK
 }

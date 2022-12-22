@@ -14,6 +14,10 @@ spring:
     host: 47.99.151.12
     port: 6379
     password: qetuoZXCVBNM
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.99.151.12:8848
 
 #配置plus打印sql⽇志
 mybatis-plus:

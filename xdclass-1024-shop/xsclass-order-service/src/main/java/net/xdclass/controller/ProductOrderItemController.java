@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-12-21
  */
 @RestController
-@RequestMapping("/productOrderItemDO")
+@RequestMapping("/api/productOrderItemDO/v1")
 public class ProductOrderItemController {
 
 }
