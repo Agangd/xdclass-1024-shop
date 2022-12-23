@@ -10,6 +10,7 @@ import net.xdclass.enums.ProductOrderPayTypeEnum;
 import net.xdclass.request.ConfirmOrderRequest;
 import net.xdclass.service.ProductOrderService;
 import net.xdclass.util.JsonData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ import java.io.IOException;
 @Slf4j
 public class ProductOrderController {
 
+    @Autowired
     private ProductOrderService orderService;
 
     @ApiOperation("提交订单")
