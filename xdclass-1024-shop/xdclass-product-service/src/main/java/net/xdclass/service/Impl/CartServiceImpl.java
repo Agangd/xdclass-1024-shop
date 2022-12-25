@@ -186,7 +186,6 @@ public class CartServiceImpl implements CartService {
 
         //分组
         Map<Long, ProductVO> maps = productVOList.stream().collect(Collectors.toMap(ProductVO::getId, Function.identity()));
-
         cartItemVOList.stream().forEach(item -> {
 
             ProductVO productVO = maps.get(item.getProductId());

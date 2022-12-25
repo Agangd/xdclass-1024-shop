@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class NotifyController {
 
-    @Autowired
+    @Resource
     private Producer captchaProducer;
 
 
@@ -54,7 +55,7 @@ public class NotifyController {
         String captcha = captchaProducer.createText();
         log.info("图形验证码：{}",captcha);
 
-        //存储
+        //存储   
         redisTemplate.opsForValue().set(getCaptchaKey(request),captcha,CAPTCHA_CODE_EXPIRED,TimeUnit.MILLISECONDS);
 //        redisTemplate.opsForValue().set("k3","v1");
         log.info("存入redis的键={}",getCaptchaKey(request));
