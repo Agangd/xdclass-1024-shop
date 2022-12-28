@@ -12,6 +12,8 @@ import net.xdclass.vo.UserVO;
 import net.xdclass.service.FileService;
 import net.xdclass.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -65,6 +67,7 @@ public class UserController {
      */
     @ApiOperation("用户注册")
     @PostMapping("register")
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public JsonData register(
             @ApiParam("用户注册对象")
             @RequestBody UserRegisterRequest registerRequest) {

@@ -47,3 +47,11 @@ aliyun:
     access-Key-id: LTAI5t9SX9oAscQohRA3u8JK
     access-Key-secret: 1Gr3HCoRoILswlodY6QT1mHS8cYSnk
     bucketname: xdclass-1024-shop-user-service-agang
+
+#seata:
+#  tx-service-group: ${spring.application.name}-group
+#  service:
+#    grouplist:
+#      xdclass: 47.99.151.12:8091
+#    vgroup-mapping:
+#      xdclass-user-service-group: xdclass

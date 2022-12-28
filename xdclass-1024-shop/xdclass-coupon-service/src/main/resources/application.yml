@@ -27,3 +27,11 @@ mybatis-plus:
 logging:
   level:
     root: INFO
+#
+#seata:
+#  tx-service-group: ${spring.application.name}-group
+#  service:
+#    grouplist:
+#      xdclass: 47.99.151.12:8091
+#    vgroup-mapping:
+#      xdclass-coupon-service-group: xdclass

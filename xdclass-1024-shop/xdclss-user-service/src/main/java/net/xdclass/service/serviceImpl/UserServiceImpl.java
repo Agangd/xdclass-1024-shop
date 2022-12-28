@@ -23,6 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -41,6 +43,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
+//    @GlobalTransactional
+    @Transactional(rollbackFor=Exception.class,propagation= Propagation.REQUIRED)
     public JsonData register(UserRegisterRequest registerRequest) {
 
         boolean checkCode = false;
@@ -72,6 +76,9 @@ public class UserServiceImpl implements UserService {
 
             //新用户注册成功，初始化信息，发放福利 TODO
             userRegisterInitTask(userDO);
+
+//            //模拟异常
+//            int b = 1/0;
             return JsonData.buildSuccess();
         } else {
             return JsonData.buildResult(BizCodeEnum.ACCOUNT_REPEAT);
@@ -82,32 +89,32 @@ public class UserServiceImpl implements UserService {
      * 用户登录
      * 1、根据mail找是否存在这条记录
      * 2、有则用密钥+用户传递的明文密码，进行加密，再和数据库的密文进行匹配
+     *
      * @param userLoginRequest
      * @return
      */
     @Override
     public JsonData login(UserLoginRequest userLoginRequest) {
 
-        List<UserDO> userDOList = userMapper.selectList(new QueryWrapper<UserDO>().eq("mail",userLoginRequest.getMail()));
-        if (userDOList != null && userDOList.size() == 1){
+        List<UserDO> userDOList = userMapper.selectList(new QueryWrapper<UserDO>().eq("mail", userLoginRequest.getMail()));
+        if (userDOList != null && userDOList.size() == 1) {
             //已经注册
             UserDO userDo = userDOList.get(0);
-            String crypt = Md5Crypt.md5Crypt(userLoginRequest.getPwd().getBytes(),userDo.getSecret());
+            String crypt = Md5Crypt.md5Crypt(userLoginRequest.getPwd().getBytes(), userDo.getSecret());
 
-            if (crypt.equals(userDo.getPwd())){
+            if (crypt.equals(userDo.getPwd())) {
                 //登录成功，生成token
                 LoginUser loginUser = LoginUser.builder().build();
-                BeanUtils.copyProperties(userDo,loginUser);
+                BeanUtils.copyProperties(userDo, loginUser);
 
                 String token = JWTUtil.geneJsonWebToken(loginUser);
 
                 return JsonData.buildSuccess(token);
-            }
-            else {
+            } else {
                 //密码错误
                 return JsonData.buildResult(BizCodeEnum.ACCOUNT_PWD_ERROR);
             }
-        }else {
+        } else {
             //账号未注册
             return JsonData.buildResult(BizCodeEnum.ACCOUNT_UNREGISTER);
         }
@@ -115,6 +122,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 查找用户详情
+     *
      * @return
      */
     @Override
@@ -122,10 +130,10 @@ public class UserServiceImpl implements UserService {
 
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
 
-        UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>().eq("id",loginUser.getId()));
+        UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>().eq("id", loginUser.getId()));
 
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(userDO,userVO);
+        BeanUtils.copyProperties(userDO, userVO);
         return userVO;
     }
 
@@ -137,7 +145,7 @@ public class UserServiceImpl implements UserService {
      */
     private boolean checkUnique(String mail) {
 
-        QueryWrapper<UserDO> queryWrapper = new QueryWrapper<UserDO>().eq("mail",mail);
+        QueryWrapper<UserDO> queryWrapper = new QueryWrapper<UserDO>().eq("mail", mail);
 
         List<UserDO> list = userMapper.selectList(queryWrapper);
 
@@ -155,6 +163,9 @@ public class UserServiceImpl implements UserService {
         request.setName(userDO.getName());
         request.setUserId(userDO.getId());
         JsonData jsonData = couponFeginService.addNewUserCoupon(request);
-        log.info("发放新用户注册优惠券:{},结果:{}",request.toString(),jsonData);
+//        if (jsonData.getCode() != 0){
+//            throw new RuntimeException("发放优惠券异常");
+//        }
+        log.info("发放新用户注册优惠券:{},结果:{}", request.toString(), jsonData);
     }
 }
