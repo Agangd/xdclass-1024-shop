@@ -4,8 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import net.xdclass.enums.BizCodeEnum;
+import net.xdclass.enums.CouponStateEnum;
+import net.xdclass.enums.StockTaskEnum;
+import net.xdclass.exception.BizException;
 import net.xdclass.interceptor.LoginInterceptor;
+import net.xdclass.mapper.CouponTaskMapper;
+import net.xdclass.model.CouponTaskDO;
 import net.xdclass.model.LoginUser;
+import net.xdclass.request.LockCouponRecordRequest;
+import net.xdclass.util.JsonData;
 import net.xdclass.vo.CouponRecordVO;
 import net.xdclass.mapper.CouponRecordMapper;
 import net.xdclass.model.CouponRecordDO;
@@ -14,7 +22,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -33,6 +43,9 @@ public class CouponRecordServiceImpl implements CouponRecordService {
 
     @Resource
     private CouponRecordMapper couponRecordMapper;
+
+    @Resource
+    private CouponTaskMapper couponTaskMapper;
     /**
      * 分页查询领券记录
      * @param page
@@ -76,6 +89,54 @@ public class CouponRecordServiceImpl implements CouponRecordService {
             return null;
         }
         return beanProcess(couponRecordDO);
+    }
+
+    /**
+     * 锁定优惠券
+     *
+     * 1)锁定优惠券记录
+     * 2)task表插入记录
+     * 3)发送延迟消息
+     *
+     * @param recordRequest
+     * @return
+     */
+    @Override
+    public JsonData lockCouponRecords(LockCouponRecordRequest recordRequest) {
+
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+
+        String orderOutTradeNo = recordRequest.getOrderOutTradeNo();
+        List<Long> lockCouponRecordIds = recordRequest.getLockCouponRecordIds();
+
+        int updateRows = couponRecordMapper.lockUserStateBatch(loginUser.getId(), CouponStateEnum.USED.name(),lockCouponRecordIds);
+
+        List<CouponTaskDO> couponTaskDOList = lockCouponRecordIds.stream().map(obj->{
+
+            CouponTaskDO couponTaskDO = new CouponTaskDO();
+            couponTaskDO.setCreateTime(new Date());
+            couponTaskDO.setOutTradeNo(orderOutTradeNo);
+            couponTaskDO.setCouponRecordId(obj);
+            couponTaskDO.setLockState(StockTaskEnum.LOCK.name());
+            return couponTaskDO;
+
+        }).collect(Collectors.toList());
+
+        int insertRows = couponTaskMapper.insertBatch(couponTaskDOList);
+
+        log.info("优惠券记录锁定updateRows={}",updateRows);
+        log.info("新增优惠券记录task insertRows={}",insertRows);
+
+        if (lockCouponRecordIds.size() == insertRows && insertRows == updateRows){
+            //发送延迟消息 TODO
+
+
+            return JsonData.buildSuccess();
+        }
+
+        else {
+            throw new BizException(BizCodeEnum.COUPON_RECORD_LOCK_FAIL);
+        }
     }
 
     //将CouponRecordDO转换成CouponRecordVO的方法
