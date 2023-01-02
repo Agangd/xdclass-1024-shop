@@ -15,10 +15,12 @@ spring:
     port: 6379
     password: qetuoZXCVBNM
   cloud:
+    #注册中心
     nacos:
       discovery:
         server-addr: 47.99.151.12:8848
-#邮箱配置
+
+  #邮箱配置
   mail:
     host: smtp.163.com
     username: agang_999@163.com
@@ -55,3 +57,4 @@ aliyun:
 #      xdclass: 47.99.151.12:8091
 #    vgroup-mapping:
 #      xdclass-user-service-group: xdclass
+

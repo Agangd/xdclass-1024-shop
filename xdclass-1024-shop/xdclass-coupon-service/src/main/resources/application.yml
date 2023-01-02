@@ -18,6 +18,16 @@ spring:
     nacos:
       discovery:
         server-addr: 47.99.151.12:8848
+  rabbitmq:
+    host: 47.99.151.12
+    port: 5672
+    virtual-host: /
+    username: admin
+    password: password
+    #开启手动确认消息
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 #配置plus打印sql⽇志
 mybatis-plus:
