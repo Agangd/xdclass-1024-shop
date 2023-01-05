@@ -35,7 +35,7 @@ public class RabbitMQConfig {
      * 进⼊队列的路由key
      */
 
-    @Value("${mqconfig.coupon_release_delay_routing _key}")
+    @Value("${mqconfig.coupon_release_delay_routing_key}")
     private String couponReleaseDelayRoutingKey;
 
     /**
@@ -106,7 +106,7 @@ public class RabbitMQConfig {
      */
     @Bean
     public Binding couponReleaseDelayBinding(){
-        return new Binding(couponReleaseDelayQueue,Binding.DestinationType.QUEUE,eventExchange,couponReleaseRoutingKey,null);
+        return new Binding(couponReleaseDelayQueue,Binding.DestinationType.QUEUE,eventExchange,couponReleaseDelayRoutingKey,null);
     }
 
 

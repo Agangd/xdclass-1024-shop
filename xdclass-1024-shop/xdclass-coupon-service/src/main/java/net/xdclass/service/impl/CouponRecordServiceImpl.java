@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import net.xdclass.config.RabbitMQConfig;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.enums.CouponStateEnum;
 import net.xdclass.enums.StockTaskEnum;
 import net.xdclass.exception.BizException;
 import net.xdclass.interceptor.LoginInterceptor;
 import net.xdclass.mapper.CouponTaskMapper;
+import net.xdclass.model.CouponRecordMessage;
 import net.xdclass.model.CouponTaskDO;
 import net.xdclass.model.LoginUser;
 import net.xdclass.request.LockCouponRecordRequest;
@@ -18,6 +20,7 @@ import net.xdclass.vo.CouponRecordVO;
 import net.xdclass.mapper.CouponRecordMapper;
 import net.xdclass.model.CouponRecordDO;
 import net.xdclass.service.CouponRecordService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +49,13 @@ public class CouponRecordServiceImpl implements CouponRecordService {
 
     @Resource
     private CouponTaskMapper couponTaskMapper;
+
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource
+    private RabbitMQConfig rabbitMQConfig;
+
     /**
      * 分页查询领券记录
      * @param page
@@ -81,8 +91,7 @@ public class CouponRecordServiceImpl implements CouponRecordService {
 
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
 
-        QueryWrapper queryWrapper = new QueryWrapper<CouponRecordDO>().eq("id",recordId)
-                .eq("user_id",loginUser.getId());
+        QueryWrapper queryWrapper = new QueryWrapper<CouponRecordDO>().eq("id",recordId).eq("user_id",loginUser.getId());
         CouponRecordDO couponRecordDO = couponRecordMapper.selectOne(queryWrapper);
 
         if (couponRecordDO == null){
@@ -128,8 +137,17 @@ public class CouponRecordServiceImpl implements CouponRecordService {
         log.info("新增优惠券记录task insertRows={}",insertRows);
 
         if (lockCouponRecordIds.size() == insertRows && insertRows == updateRows){
-            //发送延迟消息 TODO
+            //发送延迟消息
 
+            for (CouponTaskDO couponTaskDO : couponTaskDOList){
+                CouponRecordMessage couponRecordMessage = new CouponRecordMessage();
+                couponRecordMessage.setOutTradeNo(orderOutTradeNo);
+                couponRecordMessage.setTaskId(couponTaskDO.getId());
+
+                rabbitTemplate.convertAndSend(rabbitMQConfig.getEventExchange(),rabbitMQConfig.getCouponReleaseDelayRoutingKey(),couponRecordMessage);
+                log.info("优惠券锁定消息发送成功 :{}",couponRecordMessage.toString());
+
+            }
 
             return JsonData.buildSuccess();
         }
