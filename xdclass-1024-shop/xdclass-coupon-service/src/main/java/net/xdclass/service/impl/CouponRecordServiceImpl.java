@@ -7,8 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.xdclass.config.RabbitMQConfig;
 import net.xdclass.enums.BizCodeEnum;
 import net.xdclass.enums.CouponStateEnum;
+import net.xdclass.enums.ProductOrderStateEnum;
 import net.xdclass.enums.StockTaskEnum;
 import net.xdclass.exception.BizException;
+import net.xdclass.fegin.ProductOrderFeignService;
 import net.xdclass.interceptor.LoginInterceptor;
 import net.xdclass.mapper.CouponTaskMapper;
 import net.xdclass.model.CouponRecordMessage;
@@ -23,6 +25,8 @@ import net.xdclass.service.CouponRecordService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -56,6 +60,8 @@ public class CouponRecordServiceImpl implements CouponRecordService {
     @Resource
     private RabbitMQConfig rabbitMQConfig;
 
+    @Resource
+    private ProductOrderFeignService orderFeignService;
     /**
      * 分页查询领券记录
      * @param page
@@ -155,6 +161,65 @@ public class CouponRecordServiceImpl implements CouponRecordService {
         else {
             throw new BizException(BizCodeEnum.COUPON_RECORD_LOCK_FAIL);
         }
+    }
+
+    /**
+     * 释放优惠券记录
+     *
+     * 解锁优惠券记录
+     * 1）查询task工作单是否存在
+     * 2)查询订单状态
+     * @param couponRecordMessage
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public boolean releaseCouponRecord(CouponRecordMessage couponRecordMessage) {
+
+        //查询工作单是否存在
+        CouponTaskDO taskDO = couponTaskMapper.selectOne(new QueryWrapper<CouponTaskDO>().eq("id",couponRecordMessage.getTaskId()));
+
+        if (taskDO == null){
+            log.warn("工作单不存在，消息:{}",couponRecordMessage);
+            return true;
+        }
+
+        //lock状态才处理
+        if(taskDO.getLockState().equalsIgnoreCase(StockTaskEnum.LOCK.name())){
+
+            //查询订单状态
+            JsonData jsonData = orderFeignService.queryProductOrderState(couponRecordMessage.getOutTradeNo());
+            if (jsonData.getCode() == 0){
+                 //正常响应，判断订单状态
+                String state = jsonData.getData().toString();
+                if (ProductOrderStateEnum.NEW.name().equalsIgnoreCase(state)){
+                    //状态都是NEW新建状态，则返回给消息队列，重新投递
+                    log.warn("订单状态是NEW,返回给消息队列，重新投递:{}",couponRecordMessage);
+                    return false;
+                }
+
+                if (ProductOrderStateEnum.PAY.name().equalsIgnoreCase(state)){
+                    //如果是已经支付，修改task状态为finish
+                    taskDO.setLockState(StockTaskEnum.FINISH.name());
+                    couponTaskMapper.update(taskDO,new QueryWrapper<CouponTaskDO>().eq("id",couponRecordMessage.getTaskId()));
+                    log.info("订单已经支付，修改库存锁定工作单FINISH状态:{}",couponRecordMessage);
+                    return true;
+                }
+
+            }
+
+            //订单不存在或订单被取消，确认消息即可，修改task状态未CANCEL,恢复优惠券记录未NEW
+            log.warn("订单不存在或订单被取消，确认消息即可，修改task状态未CANCEL,恢复优惠券记录未NEW，message:{}",couponRecordMessage);
+            taskDO.setLockState(StockTaskEnum.CANCEL.name());
+            couponTaskMapper.update(taskDO,new QueryWrapper<CouponTaskDO>().eq("id",couponRecordMessage.getTaskId()));
+
+            //恢复优惠券记录是new状态
+            couponRecordMapper.updateState(taskDO.getCouponRecordId(),CouponStateEnum.NEW.name());
+        }else {
+            log.warn("工作单状态不是LOCK,state={},消息体={}",taskDO.getLockState(),couponRecordMessage);
+        }
+        return true;
+
     }
 
     //将CouponRecordDO转换成CouponRecordVO的方法
