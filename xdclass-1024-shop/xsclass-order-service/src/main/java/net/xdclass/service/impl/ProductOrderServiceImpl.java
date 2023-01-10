@@ -1,5 +1,6 @@
 package net.xdclass.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.xdclass.model.ProductOrderDO;
 import net.xdclass.mapper.ProductOrderMapper;
@@ -8,6 +9,8 @@ import net.xdclass.service.ProductOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import net.xdclass.util.JsonData;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -21,6 +24,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ProductOrderServiceImpl implements ProductOrderService {
 
+
+    @Resource
+    private ProductOrderMapper productOrderMapper;
     /**
      * 创建订单
      * 防重提交
@@ -41,5 +47,19 @@ public class ProductOrderServiceImpl implements ProductOrderService {
     @Override
     public JsonData confirmOrder(ConfirmOrderRequest request) {
         return null;
+    }
+
+    @Override
+    public String queryProductOrderState(String outTradeNo) {
+
+        ProductOrderDO productOrderDO = productOrderMapper.selectOne(new QueryWrapper<ProductOrderDO>().eq("out_trade_no" , outTradeNo));
+
+        if (productOrderDO == null){
+            return  "";
+        }
+        else{
+            return productOrderDO.getState();
+        }
+
     }
 }
